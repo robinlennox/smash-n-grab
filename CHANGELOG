@@ -1,0 +1,16 @@
+ChangeLog Smash-n-Grab 1.0.2:
+- Fixed: Changelog Name.
+ChangeLog Smash-n-Grab 1.0.1:
+- Added: Added a change log.
+- Added: Licence information.
+- Added: Shortname convert for DIR paths. As FINDSTR has a limit of 127 Characters in XP.
+- Added: Windows OS version Check.
+- Added: Domain name check for Windows 8.
+- Added: Comments for code.
+- Added: Check for access denied on network path.
+- Added: Check for Domain Controllers.
+- Added: Check for Domain Computers.
+- Updated: README.md
+- Fixed: netstat command to work with Windows 8.
+- Removed: Redundant Code.
+- Several minor changes.
