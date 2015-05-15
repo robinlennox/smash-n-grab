@@ -1,3 +1,10 @@
+ChangeLog Smash-n-Grab 1.0.3:
+- Updated: File Types
+- Added: Check File Extension to Skip
+- Added: Random File creation catch"
+- Updated: Error collection on Mapping Network Drives
+- Added: Network keyword skip
+- Added: Pass on failed drive
 ChangeLog Smash-n-Grab 1.0.2:
 - Fixed: Changelog Name.
 ChangeLog Smash-n-Grab 1.0.1:
