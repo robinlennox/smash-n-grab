@@ -153,6 +153,9 @@ DEL %TEMP%\tmp_switches.txt 2>NUL
 REM Make DIR
 MKDIR !TOOL_DIR!\tmp\ >NUL 2>&1
 
+REM If no files found path needs to be set USER_GROUP and OTHER_INFO
+SET FOLDER_PATH=!TOOL_DIR!\
+
 REM If file contains special characters causes file to be created
 MKDIR !TOOL_DIR!\tmp\random_files\ >NUL 2>&1
 
