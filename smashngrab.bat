@@ -277,14 +277,14 @@ FOR /F "usebackq tokens=1*" %%A IN (`FSUTIL FSINFO DRIVES ^| FIND ":"`) DO (
 	IF /i "%%A" NEQ "Drives:" (
 		SET DRIVE_LETTER=%%A
 		FOR %%Z IN (!DRIVE_LETTER!) DO (
-			ECHO %%Z >> %TOOL_DIR%\tmp\tmp_drive_info.txt
+			ECHO %%Z >> !TOOL_DIR!\tmp\tmp_drive_info.txt
 		)
 	) ELSE (
 		REM Needed when running via PSEXEC
 		IF NOT [%%B] EQU [] (
 			SET DRIVE_LETTER=%%B
 			FOR %%Z IN (!DRIVE_LETTER!) DO (
-				ECHO %%Z >> %TOOL_DIR%\tmp\tmp_drive_info.txt
+				ECHO %%Z >> !TOOL_DIR!\tmp\tmp_drive_info.txt
 			)
 		)
 	)
@@ -295,7 +295,7 @@ FOR /F "usebackq tokens=1*" %%A IN (`FSUTIL FSINFO DRIVES ^| FIND ":"`) DO (
 			FOR /F "usebackq tokens=3" %%C IN (`NET USE !DRIVE_LETTER! ^| FIND "\\"` ) DO (
 				SET DRIVE_LETTER=%%C
 				FOR %%Z IN (!DRIVE_LETTER!) DO (
-					ECHO %%Z >> %TOOL_DIR%\tmp\tmp_mapped_drive_unc.txt
+					ECHO %%Z >> !TOOL_DIR!\tmp\tmp_mapped_drive_unc.txt
 				)
 			)
 		)
@@ -318,7 +318,7 @@ FOR %%A IN (%FILE_TYPE_NO_KEYWORD_SEARCH%) DO (
 )
 
 REM Cycle through drive letters
-FOR /F %%A IN (%TOOL_DIR%\tmp\tmp_drive_info.txt) DO (
+FOR /F %%A IN (!TOOL_DIR!\tmp\tmp_drive_info.txt) DO (
 	REM Search for files on whole disk
 	SET MESSAGE=Scanning root directory for files and directories.
 	SET MSG=Scanning %%A - Depending the number of files in a directory this might take awhile.
@@ -328,14 +328,14 @@ FOR /F %%A IN (%TOOL_DIR%\tmp\tmp_drive_info.txt) DO (
 	CD /D %%A
 	REM If failed to open drive
 	IF NOT !ERRORLEVEL!==1 (
-		CD /D %%A & DIR !NEW_FILE_TYPE! /S /B /A >> %TOOL_DIR%\tmp\unsorted_non_shortname_list.txt
+		CD /D %%A & DIR !NEW_FILE_TYPE! /S /B /A >> !TOOL_DIR!\tmp\unsorted_non_shortname_list.txt
 		
 		REM Check If File is Empty (No Matching File)
-		FOR %%B IN (%TOOL_DIR%\tmp\unsorted_non_shortname_list.txt) DO (
+		FOR %%B IN (!TOOL_DIR!\tmp\unsorted_non_shortname_list.txt) DO (
 			IF %%~zB lss 1 (
 				REM Remove Exclude Folders
-				FINDSTR /I /V "\Application Data \bat \WINDOWS\assembly \WINDOWS\diagnostics \WINDOWS\Microsoft.NET \WINDOWS\Inf \WINDOWS\WinSxS \WINDOWS\System32\DriverStore $NtUninstall \swsetup $hf_mig$" "%TOOL_DIR%\tmp\unsorted_non_shortname_list.txt" >> %TOOL_DIR%\tmp\sorted_non_shortname_list.txt
-				FOR /f "tokens=*" %%C IN (%TOOL_DIR%\tmp\sorted_non_shortname_list.txt) DO (
+				FINDSTR /I /V "\Application Data \bat \WINDOWS\assembly \WINDOWS\diagnostics \WINDOWS\Microsoft.NET \WINDOWS\Inf \WINDOWS\WinSxS \WINDOWS\System32\DriverStore $NtUninstall \swsetup $hf_mig$" "!TOOL_DIR!\tmp\unsorted_non_shortname_list.txt" >> !TOOL_DIR!\tmp\sorted_non_shortname_list.txt
+				FOR /f "tokens=*" %%C IN (!TOOL_DIR!\tmp\sorted_non_shortname_list.txt) DO (
 					CALL :GET_SHORT_NAME "%%C"
 					SET FOLDER_PATH=!TOOL_DIR!\info\!HOSTNAME!
 					SET FOLDER_NAME=drive_%%A
@@ -513,35 +513,35 @@ SET DOMAIN=NO
 )
 
 REM This command will return the local accounts
-NET USE > %TOOL_DIR%\info\%HOSTNAME%\mapped_drives.txt
+NET USE > !TOOL_DIR!\info\%HOSTNAME%\mapped_drives.txt
 
 REM This command will return the local accounts
-NET USERS > %TOOL_DIR%\info\%HOSTNAME%\wk_user.txt
+NET USERS > !TOOL_DIR!\info\%HOSTNAME%\wk_user.txt
 
 REM This command will show user account password and logon requirements
-NET ACCOUNTS > %TOOL_DIR%\info\%HOSTNAME%\wk_account.txt
+NET ACCOUNTS > !TOOL_DIR!\info\%HOSTNAME%\wk_account.txt
 
 REM This command will return the workstation name, user name, version of Windows, network adapter, network adapter information/MAC address, Logon domain, COM Open Timeout, COM Send Count, COM Send Timeout.
-NET CONFIG WORKSTATION > %TOOL_DIR%\info\%HOSTNAME%\wk_config.txt
+NET CONFIG WORKSTATION > !TOOL_DIR!\info\%HOSTNAME%\wk_config.txt
 
 REM This command will return the local groups on the local machine.
-NET LOCALGROUP > %TOOL_DIR%\info\%HOSTNAME%\wk_group.txt
+NET LOCALGROUP > !TOOL_DIR!\info\%HOSTNAME%\wk_group.txt
 
 REM This command will return the local shares on the local machine.
-NET SHARE > %TOOL_DIR%\info\%HOSTNAME%\wk_shares.txt
+NET SHARE > !TOOL_DIR!\info\%HOSTNAME%\wk_shares.txt
 
 REM This will return the user run by information.
 IF "%USERDOMAIN%\%USERNAME%"=="\" (
-		ECHO Run by: SYSTEM ACCOUNT > %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
+		ECHO Run by: SYSTEM ACCOUNT > !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
 	) ELSE (
 	IF %DOMAIN%==YES (
-		ECHO Run by: %USERDOMAIN%\%USERNAME% > %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
-		ECHO. >> %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
-		NET USER /DOMAIN %USERNAME% >> %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
+		ECHO Run by: %USERDOMAIN%\%USERNAME% > !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
+		ECHO. >> !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
+		NET USER /DOMAIN %USERNAME% >> !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
 	) ELSE (
-		ECHO Run by: %USERDOMAIN%\%USERNAME% > %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
-		ECHO. >> %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
-		NET USER %USERNAME% >> %TOOL_DIR%\info\%HOSTNAME%\run_by_info.txt
+		ECHO Run by: %USERDOMAIN%\%USERNAME% > !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
+		ECHO. >> !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
+		NET USER %USERNAME% >> !TOOL_DIR!\info\%HOSTNAME%\run_by_info.txt
 
 	)
 )
@@ -608,7 +608,7 @@ REM Grab Typed Paths from Explorer
 REG QUERY HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths > !FOLDER_PATH!\registry\typed_paths.txt 2>NUL
 
 REM Grab recently opened files OFFICE (NEED TO Enumerate)
-REG QUERY HKCU\Software\Microsoft\Office\11.0\Common\General\RecentFiles > %TOOL_DIR%\info\%HOSTNAME%\export_recent_files.txt 2>NUL
+REG QUERY HKCU\Software\Microsoft\Office\11.0\Common\General\RecentFiles > !TOOL_DIR!\info\%HOSTNAME%\export_recent_files.txt 2>NUL
 
 REM Grab recently opened files history
 REG QUERY HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU /S > !FOLDER_PATH!\registry\export_opened_files.txt 2>NUL
@@ -641,7 +641,7 @@ SET MSG=Copy Recently opened files
 CALL :SPINNER
 REM Copy all the recently opened files
 MKDIR !FOLDER_PATH!\files\opened_files\ 2>NUL
-FOR /F "usebackq tokens=* delims=REG_SZ" %%A IN (`FINDSTR /I "REG_SZ" "%TOOL_DIR%\info\%HOSTNAME%\registry\export_opened_files.txt"`) DO (
+FOR /F "usebackq tokens=* delims=REG_SZ" %%A IN (`FINDSTR /I "REG_SZ" "!TOOL_DIR!\info\%HOSTNAME%\registry\export_opened_files.txt"`) DO (
 	SET CURRENT_FILE_LOCATION=%%A
 	REM Start From the 13 position in the string
 	SET CURRENT_FILE_LOCATION=!CURRENT_FILE_LOCATION:~13!
@@ -667,7 +667,7 @@ REM If file contains special characters causes file to be created
 MKDIR !TOOL_DIR!\tmp\random_files\
 
 REM Blank File
-ECHO. > %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt 2>NUL
+ECHO. > !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt 2>NUL
 FOR /F "delims=" %%F IN ('DIR !TOOL_DIR!\info\ /A /B /S') DO (
 	SET SEARCH_FILE_NAME="%%F"
 	
@@ -757,22 +757,22 @@ FOR /F "delims=" %%F IN ('DIR !TOOL_DIR!\info\ /A /B /S') DO (
 				FOR /F "usebackq tokens=1* skip=7" %%P IN (`NET VIEW !FIRST_SCAVENGED_PATH!`) DO (
 					REM Skip last word
 					IF NOT "%%P"=="The" (
-						FIND /I "!FIRST_SCAVENGED_PATH!\%%P\" %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
-						FIND /I "!FIRST_SCAVENGED_PATH!\%%P\" %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
+						FIND /I "!FIRST_SCAVENGED_PATH!\%%P\" !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
+						FIND /I "!FIRST_SCAVENGED_PATH!\%%P\" !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
 
 						REM If path not stored in file
 						IF !ERRORLEVEL!==1 (
-							ECHO !FIRST_SCAVENGED_PATH!\%%P\>> %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
+							ECHO !FIRST_SCAVENGED_PATH!\%%P\>> !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
 						)
 					)
 				)
 
 				CALL :TRIM !SCAVENGED_PATH! SCAVENGED_PATH
-				FIND /I "!SCAVENGED_PATH!\" %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
+				FIND /I "!SCAVENGED_PATH!\" !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt >NUL 2>&1
 
 				REM If path not stored in file
 				IF !ERRORLEVEL!==1 (
-					ECHO !SCAVENGED_PATH!\>> %TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt
+					ECHO !SCAVENGED_PATH!\>> !TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt
 				)
 			)
 		)
@@ -781,7 +781,7 @@ FOR /F "delims=" %%F IN ('DIR !TOOL_DIR!\info\ /A /B /S') DO (
 
 REM Traverse Mapped Drive UNC
 SET MSG=Instrusive Search - Scavenged Drives UNC
-SET UNC_FILE=%TOOL_DIR%\tmp\tmp_scavenged_mapped_drive_unc.txt
+SET UNC_FILE=!TOOL_DIR!\tmp\tmp_scavenged_mapped_drive_unc.txt
 CALL :UNC_SETUP
 
 EXIT /B
