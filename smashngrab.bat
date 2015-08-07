@@ -173,11 +173,11 @@ GOTO :EOF
 
 :SETUP
 REM CLEANUP
-DEL !FOLDER_PATH!\files\!FOLDER_NAME!_copied_files.txt 2>NUL
-ECHO Y | DEL %TOOL_DIR%\tmp\* 2>NUL
+DEL !TOOL_DIR!\files\!FOLDER_NAME!_copied_files.txt 2>NUL
+ECHO Y | DEL !TOOL_DIR!\tmp\* 2>NUL
 
 REM Create Folders
-MKDIR !FOLDER_PATH! >NUL 2>&1
+MKDIR !TOOL_DIR! >NUL 2>&1
 EXIT /B
 
 :TITLE
