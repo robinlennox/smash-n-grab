@@ -279,7 +279,6 @@ FOR /F "usebackq tokens=1*" %%A IN (`FSUTIL FSINFO DRIVES ^| FIND ":"`) DO (
 		FOR %%Z IN (!DRIVE_LETTER!) DO (
 			ECHO %%Z >> %TOOL_DIR%\tmp\tmp_drive_info.txt
 		)
-		ECHO !DRIVE_LETTER!>> %TOOL_DIR%\tmp\tmp_drive_info.txt
 	) ELSE (
 		REM Needed when running via PSEXEC
 		IF NOT [%%B] EQU [] (
