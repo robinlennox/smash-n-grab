@@ -332,7 +332,7 @@ FOR /F %%A IN (!TOOL_DIR!\tmp\tmp_drive_info.txt) DO (
 		
 		REM Check If File is Empty (No Matching File)
 		FOR %%B IN (!TOOL_DIR!\tmp\unsorted_non_shortname_list.txt) DO (
-			IF %%~zB lss 1 (
+			IF %%~zB gtr 1 (
 				REM Remove Exclude Folders
 				FINDSTR /I /V "\Application Data \bat \WINDOWS\assembly \WINDOWS\diagnostics \WINDOWS\Microsoft.NET \WINDOWS\Inf \WINDOWS\WinSxS \WINDOWS\System32\DriverStore $NtUninstall \swsetup $hf_mig$" "!TOOL_DIR!\tmp\unsorted_non_shortname_list.txt" >> !TOOL_DIR!\tmp\sorted_non_shortname_list.txt
 				FOR /f "tokens=*" %%C IN (!TOOL_DIR!\tmp\sorted_non_shortname_list.txt) DO (
