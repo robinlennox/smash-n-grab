@@ -53,25 +53,16 @@ SET WARNING=To exit this script press CTRL+C.
 REM Used to loop parameter
 SET COUNT=1
 
-REM Temp Tools DIR for Switches
-SET TOOL_DIR1=!TOOL_DIR!
-
-REM Make DIR
-MKDIR !TOOL_DIR!\tmp\ >NUL 2>&1
-
-REM If file contains special characters causes file to be created
-MKDIR !TOOL_DIR!\tmp\random_files\ >NUL 2>&1
-
 :SWITCHES
 SET ACTIVE_SWITCHES=a b c d f i k s
 REM Help Info
 IF /I "%~1"=="/?" GOTO HELP
-CALL ECHO %%~%COUNT% > %TOOL_DIR1%\tmp\tmp_switches.txt
-FOR /F "tokens=*" %%A IN (%TOOL_DIR1%\tmp\tmp_switches.txt) DO (
-	ECHO %%A > %TOOL_DIR1%\tmp\tmp_switches_result.txt
+CALL ECHO %%~%COUNT% > %TEMP%\tmp_switches.txt
+FOR /F "tokens=*" %%A IN (%TEMP%\tmp_switches.txt) DO (
+	ECHO %%A > %TEMP%\tmp_switches_result.txt
 
 	REM Read output of TMP Switch Results
-	FOR /F "usebackq tokens=*" %%B IN (`TYPE %TOOL_DIR1%\tmp\tmp_switches_result.txt`) DO (
+	FOR /F "usebackq tokens=*" %%B IN (`TYPE %TEMP%\tmp_switches_result.txt`) DO (
 
 		SET NEW_RESULT=%%B
 	)
@@ -157,9 +148,16 @@ IF %COUNT% GTR 8 (
 
 GOTO SWITCHES
 
-DEL %TOOL_DIR%\tmp\tmp_switches.txt 2>NUL
+:SCRIPT_SETUP
+DEL %TEMP%\tmp_switches.txt 2>NUL
+REM Make DIR
+MKDIR !TOOL_DIR!\tmp\ >NUL 2>&1
+
+REM If file contains special characters causes file to be created
+MKDIR !TOOL_DIR!\tmp\random_files\ >NUL 2>&1
 
 :RUN
+CALL :SCRIPT_SETUP
 CALL :TITLE
 CALL :SETUP
 CALL :OPTIONS
