@@ -331,6 +331,9 @@ FOR /F %%A IN (!TOOL_DIR!\tmp\tmp_drive_info.txt) DO (
 	CD /D %%A
 	REM If failed to open drive
 	IF NOT !ERRORLEVEL!==1 (
+		REM Remove Old Files
+		DEL !TOOL_DIR!\tmp\unsorted_non_shortname_list.txt 2>NUL
+		DEL !TOOL_DIR!\tmp\sorted_non_shortname_list.txt 2>NUL
 		CD /D %%A & DIR !NEW_FILE_TYPE! /S /B /A >> !TOOL_DIR!\tmp\unsorted_non_shortname_list.txt
 		
 		REM Check If File is Empty (No Matching File)
