@@ -9,7 +9,7 @@ While Pen testing, I have found many Windows Machines ripe for the picking. But 
 
 So I created a script using a batch that demonstrates that even the applications shipped with Windows, Network Surveillance is possible without triggering AV!
 
-I've been mainly working in an Windows XP and 8 environment as an Administrator.
+I've been mainly working in an Windows XP, 8 and 10 environment as an Administrator.
 
 This is a work in progress... Feedback is welcome.
 
