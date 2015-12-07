@@ -159,6 +159,8 @@ SET FOLDER_PATH=!TOOL_DIR!
 REM If file contains special characters causes file to be created
 MKDIR !TOOL_DIR!\tmp\random_files\ >NUL 2>&1
 
+EXIT /B
+
 :RUN
 CALL :SCRIPT_SETUP
 CALL :TITLE
